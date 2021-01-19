@@ -1,4 +1,4 @@
-package com.rafu.workshop.UserService;
+package com.rafu.workshop.services;
 
 import java.util.List;
 
@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.rafu.workshop.domain.User;
 import com.rafu.workshop.repository.UserRepository;
+import com.rafu.workshop.services.exceptions.ObjectNotFoundException;
+
+import java.util.Optional;
+
 
 @Service
 public class UserService {
@@ -17,4 +21,10 @@ public class UserService {
 	public List<User> findAll(){
 		return repo.findAll();
 	}
+	
+	public User findById(String id) {
+		Optional<User> obj = repo.findById(id);
+		return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado"));
+
 }
+	}
