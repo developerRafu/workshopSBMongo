@@ -1,30 +1,19 @@
 package com.rafu.workshop.resources;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rafu.workshop.domain.Post;
-import com.rafu.workshop.domain.User;
-import com.rafu.workshop.dto.UserDTO;
 import com.rafu.workshop.resources.util.URL;
 import com.rafu.workshop.services.PostService;
-import com.rafu.workshop.services.UserService;
 
 @RestController
 @RequestMapping(value = "/posts")
@@ -45,4 +34,17 @@ public class PostResource {
 		List<Post> list = service.findByTitle(text);
 		return ResponseEntity.ok().body(list);
 	}
+	
+	@RequestMapping(value = "/fullsearch", method = RequestMethod.GET)
+	public ResponseEntity<List<Post>> fullSearch(@RequestParam(value="text",defaultValue = "") String text,
+											     @RequestParam(value="minDate",defaultValue = "") String minDate,
+											     @RequestParam(value="maxDate",defaultValue = "") String maxDate) {
+		text = URL.decodeParam(text);
+		Date min = URL.convertDate(minDate,new Date(0L));
+		Date max = URL.convertDate(maxDate,new Date());
+		List<Post> list = service.fullSearch(text, min, max);
+		return ResponseEntity.ok().body(list);
+	}
+	
+	
 }
